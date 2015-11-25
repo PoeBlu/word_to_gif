@@ -7,8 +7,10 @@ var giphy = require('giphy-api')(config.key);
 /* GET home page. */
 
 router.post('/gifit', function(req,res,next){
-	var query = req.body.query
+	var query = req.body.query;
 
+	//search images and stitch them together
+	
 	giphy.search(query, function(err, resp){
 		res.send(resp.data[0].images["original"]);
 	})
