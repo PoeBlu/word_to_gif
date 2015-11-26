@@ -5,7 +5,7 @@ var config = require('../config/config');
 var giphy = require('giphy-api')(config.key);
 
 var GIFEncoder = require('gifencoder');
-var encoder = new GIFEncoder(854,480);
+var encoder = new GIFEncoder(400,400);
 var pngFileStream = require('png-file-stream');
 
 var fs = require('fs')
@@ -21,6 +21,7 @@ var flickr = new Flickr(flickrKey);
 var request = require('request');
 
 var shortid = require('shortid');
+var easyimg = require('easyimage');
 
 /* GET home page. */
 
@@ -34,7 +35,7 @@ router.post('/gifit', function(req,res,next){
 
 	var resultUrls = [];
 
-	var imageCounter = 0;
+	var imageCounter = -1;
 
 	//for each term search flickr and append to a url list
 	for(var i in queryTerms){
@@ -81,19 +82,51 @@ router.post('/gifit', function(req,res,next){
 		// 		console.log("Downloaded: "+imageUrl)
 		// 	})
 		// })
-		request(imageUrl).pipe(fs.createWriteStream(filename+counter+".png")).on('close', function(){
-			console.log("DOwnloaded")
+		var img_url = filename+counter;
+		request(imageUrl).pipe(fs.createWriteStream("../images/"+img_url+".png")).on('close', function(){
+			console.log("Downloaded")
+			resizeImages(img_url, counter, filename);
 		})
 		console.log(imageUrl, filename, counter)
 	}
 
+	function resizeImages(imageToResize, imageCounterVar, filenameVar){
+		easyimg.rescrop({
+			src:"../images/"+imageToResize+".png",
+			dst:"../images/converted/"+imageToResize+".png",
+			width:700,
+			height:500,
+			cropwidth:400,
+			cropheight:400,
+			x:0,
+			y:0
+		}).then(function(image){
+			console.log("cropped")
+			if(imageCounterVar == queryTerms.length-1){
+				console.log("Make gif")
+				createGif(filenameVar);
+			}
+		}, function(err){
+			console.log(err);
+		})
+	}
+
+	function createGif(filenameToGif){
+		pngFileStream('../images/converted/'+filenameToGif+'?.png')
+		.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
+		.pipe(fs.createWriteStream('../gif/'+filenameToGif+'.gif'));
+		
+		// pngFileStream('../images/converted/frame?.png')
+		// .pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
+		// .pipe(fs.createWriteStream('../gif/'+filenameToGif+'.gif'));
+	}
 
 
 	//function down
 
 
 	//search images and stitch them together
-	res.send("done")
+	//res.send("done")
 	// giphy.search(query, function(err, resp){
 	// 	res.send(resp.data[0].images["original"]);
 	// })
