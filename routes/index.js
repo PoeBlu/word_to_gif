@@ -114,7 +114,7 @@ router.post('/gifit', function(req,res,next){
 		var stream = fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif');
 		stream.on('close', function(){
 			stream.end();
-			console.log('made gif!')
+			console.log('Made gif!')
 			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
 		pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
