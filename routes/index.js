@@ -34,8 +34,8 @@ router.post('/gifit', function(req,res,next){
 	var queryTerms = query.split(/\s+/);
 
 	var resultUrls = [];
-
-	var imageCounter = -1;
+	console.log(queryTerms)
+	var imageCounter = 0;
 
 	//for each term search flickr and append to a url list
 	for(var i in queryTerms){
@@ -101,8 +101,9 @@ router.post('/gifit', function(req,res,next){
 			x:0,
 			y:0
 		}).then(function(image){
-			console.log("cropped")
-			if(imageCounterVar == queryTerms.length-1){
+			console.log(imageCounterVar, queryTerms.length)
+			if(imageCounterVar == queryTerms.length){
+				console.log(imageCounterVar, queryTerms.length)
 				console.log("Make gif")
 				createGif(filenameVar);
 			}
@@ -112,10 +113,21 @@ router.post('/gifit', function(req,res,next){
 	}
 
 	function createGif(filenameToGif){
+
+		var stream = fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif');
+		stream.on('close', function(){
+			res.send('done')
+		})
 		pngFileStream('../images/converted/'+filenameToGif+'?.png')
 		.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
-		.pipe(fs.createWriteStream('../gif/'+filenameToGif+'.gif'));
+		.pipe(stream);
+		// .on('close', function(){
+		// 	console.log('created gif');
+		// 	res.send('done');
+		// });
 		
+		
+		//res.send('http://localhost/images/gif/'+filenameToGif+'.gif');
 		// pngFileStream('../images/converted/frame?.png')
 		// .pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
 		// .pipe(fs.createWriteStream('../gif/'+filenameToGif+'.gif'));
@@ -135,9 +147,10 @@ router.post('/gifit', function(req,res,next){
 router.get('/giff', function(req,res,next){
 	pngFileStream('../test/frame?.png')
 	.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
-	.pipe(fs.createWriteStream('../gif/animated.gif'));
+	.pipe(fs.createWriteStream('../gif/animated.gif'))
 
-	res.send('hello')
+
+	
 })
 
 
