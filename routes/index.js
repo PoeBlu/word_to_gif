@@ -50,11 +50,13 @@ router.post('/gifit', function(req,res,next){
 
 	function searchFlickr(index) {
 		console.log("Search Flickr")
+		var sortOrder = ["date-posted-desc", "relevance", "interestingness-desc"]
+		var sort = sortOrder[Math.floor(Math.random()*(sortOrder.length))];
 		flickr.get('photos.search', {
 			"text":queryTerms[index],
 			"page":1,
 			"per_page":1,
-			"sort":"interestingness-desc",
+			"sort":sort,
 			"media":"photos"
 		}, function(err,result){
 			if(err){
