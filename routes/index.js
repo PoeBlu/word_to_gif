@@ -120,11 +120,12 @@ router.post('/gifit', function(req,res,next){
 
 		var stream = fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif');
 		stream.on('close', function(){
+			console.log('made gif!')
 			res.send('done')
 		})
 		pngFileStream('../images/converted/'+filenameToGif+'?.png')
 		.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
-		.pipe(fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif'));
+		.pipe(stream);
 		// .on('close', function(){
 		// 	console.log('created gif');
 		// 	res.send('done');
@@ -154,7 +155,7 @@ router.get('/giff', function(req,res,next){
 	.pipe(fs.createWriteStream('../gif/animated.gif'))
 
 
-	
+	res.send('giffed')
 })
 
 
