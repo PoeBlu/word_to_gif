@@ -5,7 +5,7 @@ var config = require('../config/config');
 var giphy = require('giphy-api')(config.key);
 
 var GIFEncoder = require('gifencoder');
-var encoder = new GIFEncoder(400,400);
+
 var pngFileStream = require('png-file-stream');
 
 var fs = require('fs')
@@ -82,7 +82,7 @@ router.post('/gifit', function(req,res,next){
 	}
 
 	function resizeImage(imageToResize, imageCounterVar, filenameVar){
-		console.log("resizing images")
+		console.log("Resizing images")
 		
 		easyimg.rescrop({
 			src:"../images/"+imageToResize+".jpg",
@@ -94,6 +94,7 @@ router.post('/gifit', function(req,res,next){
 			x:0,
 			y:0
 		}).then(function(image){
+			console.log("Resized Image")
 			resizeImageCounter++;
 			console.log(resizeImageCounter, queryTerms.length)
 			if(resizeImageCounter == queryTerms.length){
@@ -107,11 +108,12 @@ router.post('/gifit', function(req,res,next){
 	}
 
 	function createGif(filenameToGif){
-
+		var encoder = new GIFEncoder(400,400);
 		var stream = fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif');
 		stream.on('close', function(){
+			stream.end();
 			console.log('made gif!')
-			res.send('http://localhost/images/gif/'+filenameToGif+'.gif');
+			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
 		pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
 		.pipe(encoder.createWriteStream({repeat:0, delay:300, quality:10}))
@@ -130,14 +132,14 @@ router.post('/gifit', function(req,res,next){
 	// })
 })
 
-router.get('/giff', function(req,res,next){
-	pngFileStream('../test/frame?.png')
-	.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
-	.pipe(fs.createWriteStream('../gif/animated.gif'))
+// router.get('/giff', function(req,res,next){
+// 	pngFileStream('../test/frame?.png')
+// 	.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
+// 	.pipe(fs.createWriteStream('../gif/animated.gif'))
 
 
-	res.send('giffed')
-})
+// 	res.send('giffed')
+// })
 
 
 router.get('/', function(req, res, next) {
