@@ -2,12 +2,29 @@ $(document).ready(function(){
 
 	console.log("hello");
 
+	var searchGiphy = false;
+
+	$("#check").on('click', function(event){
+		if($(this).is(":checked")){
+			searchGiphy = true;
+		} else {
+			searchGiphy = false;
+		}
+		console.log(searchGiphy)
+	})
+
 	$("form").on('submit', function(event){
 
 		event.preventDefault();
 		var query = $(".gif-query").val();
+		query = $.trim(query); //remove whitespace
 
-		if(query){
+		if(!query){
+			console.log("no query");
+			return;
+		}
+
+		if(!searchGiphy){
 
 			$.ajax({
 				"url":"http://localhost:3000/gifit",
@@ -22,7 +39,17 @@ $(document).ready(function(){
 			})
 
 		} else {
-			console.log("no text detected")
+			$.ajax({
+				"url":"http://localhost:3000/giphyit",
+				"method": "POST",
+				"data":{"query":query}
+			})
+			.done(function(resp){
+				console.log(resp)
+			})
+			.error(function(err){
+				console.log(err)
+			})
 		}
 
 	})

@@ -10,10 +10,6 @@ var pngFileStream = require('png-file-stream');
 
 var fs = require('fs')
 
-// var Flickr = require("flickrapi"),
-//     flickrOptions = {
-//     	"api-key":config.flickr
-//     }
 var Flickr = require('node-flickr')
 var flickrKey = {'api_key':config.flickr}
 var flickr = new Flickr(flickrKey);
@@ -32,6 +28,12 @@ router.post('/gifit', function(req,res,next){
 
 	//split query on spaces
 	var queryTerms = query.split(/\s+/);
+
+	// return if no query is detected
+	if(queryTerms.length == 0){
+		res.send("no length sent")
+		return
+	}
 
 	console.log(queryTerms)
 
