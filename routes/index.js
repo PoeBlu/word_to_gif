@@ -31,6 +31,7 @@ var rimraf = require('rimraf');
 
 router.post('/imgtogif', function(req,res,next){
 	var query = req.body.query;
+	query = query.trim();
 
 	var uniqueFilename = shortid.generate();
 
@@ -177,6 +178,7 @@ router.post('/imgtogif', function(req,res,next){
 router.post('/giftogif', function(req, res, next){
 
 	var query = req.body.query;
+	query = query.trim();
 
 	var uniqueFilename = shortid.generate();
 

@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 		event.preventDefault();
 		var query = $(".gif-query").val();
-		query = $.trim(query); //remove whitespace
+		query = query.trim(); //remove whitespace
 
 		if(!query){
 			console.log("no query");
