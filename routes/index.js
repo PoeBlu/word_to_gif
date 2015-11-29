@@ -19,14 +19,13 @@ var request = require('request');
 var shortid = require('shortid');
 var easyimg = require('easyimage');
 
-var gif = require('gif-explode');
-
-var execFile = require('child_process').execFile;
-var gifsicle = require('gifsicle')
-
 var exec = require('child_process').exec;
 
 var rimraf = require('rimraf');
+
+// var gif = require('gif-explode');
+// var execFile = require('child_process').execFile;
+// var gifsicle = require('gifsicle')
 
 /* GET home page. */
 
@@ -54,9 +53,7 @@ router.post('/imgtogif', function(req,res,next){
 
 	//for each term search flickr and append to a url list
 	for(var i in queryTerms){
-
 		searchFlickr(i);
-		
 	}
 
 	function searchFlickr(index) {
@@ -96,45 +93,73 @@ router.post('/imgtogif', function(req,res,next){
 
 	function resizeImage(imageToResize, imageCounterVar, filenameVar){
 		console.log("Resizing images")
-		
-		easyimg.rescrop({
-			src:"../images/"+imageToResize+".jpg",
-			dst:"../images/converted/"+filenameVar+"/"+imageToResize+".png",
-			width:700,
-			height:500,
-			cropwidth:400,
-			cropheight:400,
-			x:0,
-			y:0
-		}).then(function(image){
-			console.log("Resized Image")
+
+		var dir = '../images/converted/'+filenameVar;
+
+		if(!fs.existsSync(dir)){
+			fs.mkdirSync(dir);
+		}
+
+		var cmd = "convert ../images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 "+dir+"/"+imageToResize+".jpg"
+
+		exec(cmd, function(err){
+			console.log('RESIZED JPG');
 			resizeImageCounter++;
-			console.log(resizeImageCounter, queryTerms.length)
-			//delete original image once its been resized
 			deleteFile("../images/"+imageToResize+".jpg");
 			if(resizeImageCounter == queryTerms.length){
 				console.log(resizeImageCounter, queryTerms.length)
 				console.log("Make gif")
 				createGif(filenameVar);
 			}
-		}, function(err){
-			console.log(err);
 		})
+		
+		// easyimg.rescrop({
+		// 	src:"../images/"+imageToResize+".jpg",
+		// 	dst:"../images/converted/"+filenameVar+"/"+imageToResize+".png",
+		// 	width:700,
+		// 	height:500,
+		// 	cropwidth:400,
+		// 	cropheight:400,
+		// 	x:0,
+		// 	y:0
+		// }).then(function(image){
+		// 	console.log("Resized Image")
+		// 	resizeImageCounter++;
+		// 	console.log(resizeImageCounter, queryTerms.length)
+		// 	//delete original image once its been resized
+		// 	deleteFile("../images/"+imageToResize+".jpg");
+		// 	if(resizeImageCounter == queryTerms.length){
+		// 		console.log(resizeImageCounter, queryTerms.length)
+		// 		console.log("Make gif")
+		// 		createGif(filenameVar);
+		// 	}
+		// }, function(err){
+		// 	console.log(err);
+		// })
 	}
 
 	function createGif(filenameToGif){
-		var encoder = new GIFEncoder(400,400);
-		var stream = fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif');
-		stream.on('close', function(){
-			stream.end();
-			console.log('Made gif!')
-			//delete folder once its been combined to a gif
+		// var encoder = new GIFEncoder(400,400);
+		// var stream = fs.createWriteStream('../public/images/gif/'+filenameToGif+'.gif');
+		// stream.on('close', function(){
+		// 	stream.end();
+		// 	console.log('Made gif!')
+		// 	//delete folder once its been combined to a gif
+		// 	deleteFolder('../images/converted/'+filenameToGif)
+		// 	res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
+		// })
+		// pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
+		// .pipe(encoder.createWriteStream({repeat:0, delay:350, quality:10}))
+		// .pipe(stream);
+
+		var cmd = 'convert -delay 50 -loop 0 ../images/converted/'+filenameToGif+'/'+filenameToGif+'*.jpg ../public/images/gif/'+filenameToGif+'.gif';
+
+		exec(cmd, function(err){
+			console.log("COMBINED to gif");
+			//delete folders once its been combined to a gif
 			deleteFolder('../images/converted/'+filenameToGif)
 			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
-		pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
-		.pipe(encoder.createWriteStream({repeat:0, delay:350, quality:10}))
-		.pipe(stream);
 
 	}
 
@@ -181,7 +206,10 @@ router.post('/giftogif', function(req, res, next){
 		giphy.search(queryTerms[index], function(err, resp){
 			imageCounter++;
 			console.log("IMG COUNTER: "+imageCounter);
-			var url = resp.data[0].images["original"].url;
+			// pick random gif from the array of returned gifs
+			var randomGif = resp.data[Math.floor(Math.random()*(resp.data.length))]
+			var url = randomGif.images['original'].url
+			//var url = resp.data[0].images['original'].url;
 			console.log("URL: "+url);
 			downloadGif(url,uniqueFilename ,imageCounter)
 		})
@@ -200,28 +228,34 @@ router.post('/giftogif', function(req, res, next){
 	function resizeGif(imageToResize, imageCounterVar, filenameVar){
 		console.log("Resizing GIF")
 		
-		easyimg.rescrop({
-			src:"../images/"+imageToResize+".gif",
-			dst:"../images/"+imageToResize+".gif",
-			width:400,
-			height:300,
-			cropwidth:400,
-			cropheight:300,
-			x:0,
-			y:0
-		}).then(function(image){
-			console.log("Resized GIF")
-			execImageMagick(imageToResize, filenameVar)
-		}, function(err){
-			console.log(err);
+		var cmd = "convert ../images/"+imageToResize+".gif -resize 400x300^ -gravity center -extent 400x300 ../images/"+imageToResize+".gif"
+
+		exec(cmd, function(err){
+			console.log('RESIZED GIF');
+			explodeImageMagick(imageToResize, filenameVar)
 		})
+
+		// easyimg.rescrop({
+		// 	src:"../images/"+imageToResize+".gif",
+		// 	dst:"../images/"+imageToResize+".gif",
+		// 	width:800,
+		// 	height:800,
+		// 	cropwidth:400,
+		// 	cropheight:300,
+		// 	gravity: 'NorthWest'
+		// }).then(function(image){
+		// 	console.log("Resized GIF")
+		// 	explodeImageMagick(imageToResize, filenameVar)
+		// }, function(err){
+		// 	console.log(err);
+		// })
 	}
 
 	
 
-	function execImageMagick(img_name, filename){
+	function explodeImageMagick(img_name, filename){
 		//create a unique directory for the gifs if it doesnt exist
-
+		console.log('Exploding gif')
 		var dir = '../images/gifconverted/'+filename;
 
 		if(!fs.existsSync(dir)){
@@ -230,6 +264,7 @@ router.post('/giftogif', function(req, res, next){
 		
 		var cmd = 'convert -coalesce ../images/'+img_name+'.gif '+dir+'/'+img_name+'%04d.gif'
 		exec(cmd, function(err){
+			console.log('Exploded Gif')
 			explodedGif++;
 			console.log("ERROR: " +err)
 			console.log("EXPLODED GIF: ",explodedGif)
@@ -247,7 +282,7 @@ router.post('/giftogif', function(req, res, next){
 
 	function combineToGif(filename){
 		console.log("combining to gif")
-		var cmd = 'convert -delay 10 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
+		var cmd = 'convert -delay 7 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED");
@@ -286,6 +321,14 @@ router.post('/giftogif', function(req, res, next){
 
 	// 	return
 	// }
+})
+
+router.post('/s', function(req,res,next){
+
+	 giphy.search('hello', function(err, resp){
+	 	var randomGif = resp.data[Math.floor(Math.random()*(resp.data.length))]
+	 	res.send(randomGif);
+	})
 })
 
 function deleteFile(filePath){

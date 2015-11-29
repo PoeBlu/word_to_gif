@@ -56,4 +56,20 @@ $(document).ready(function(){
 
 	})
 
+	$("#giphysearch").on('click', function(event){
+		event.preventDefault();
+
+		$.ajax({
+				"url":"http://localhost:3000/s",
+				"method": "POST"
+			})
+			.done(function(resp){
+				console.log("GOT GIF FROM IMGS")
+				console.log(resp)
+			})
+			.error(function(err){
+				console.log(err)
+			})
+	})
+
 })
