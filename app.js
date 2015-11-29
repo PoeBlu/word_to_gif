@@ -1,3 +1,4 @@
+//remember to install imagemagick on the system
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');

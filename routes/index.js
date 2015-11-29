@@ -24,6 +24,8 @@ var gif = require('gif-explode');
 var execFile = require('child_process').execFile;
 var gifsicle = require('gifsicle')
 
+var exec = require('child_process').exec;
+
 /* GET home page. */
 
 router.post('/gifit', function(req,res,next){
@@ -142,7 +144,7 @@ router.post('/gifit', function(req,res,next){
 })
 
 router.post('/giphyit', function(req, res, next){
-	
+
 	var query = req.body.query;
 
 	var uniqueFilename = shortid.generate();
@@ -158,6 +160,8 @@ router.post('/giphyit', function(req, res, next){
 
 	var imageCounter = 0;
 	var resizeImageCounter = 0;
+
+	var downloadedGifCounter = 0;
 
 	console.log("IMG COUNTER: "+imageCounter)
 	console.log("RESIZE COUNTER: "+resizeImageCounter)
@@ -185,24 +189,80 @@ router.post('/giphyit', function(req, res, next){
 		console.log(img_path)
 		request(imageUrl).pipe(fs.createWriteStream("../images/"+img_path+".gif")).on('close', function(){
 			console.log("Downloaded gif")
+			downloadedGifCounter++;
 			//resizeImage(img_url, counter, filename);
 			//explodeGif(img_url);
-			//gifsicleIt(img_path, counter);
+			if(downloadedGifCounter == queryTerms.length){
+				//gifsicleIt(img_path, counter);
+				resizeGif(img_path, counter, filename)
+				//explodeGif(img_path)
+			}
+			//
+		})
+	}
+
+	function resizeGif(imageToResize, imageCounterVar, filenameVar){
+		console.log("Resizing images")
+		
+		easyimg.rescrop({
+			src:"../images/"+imageToResize+".gif",
+			dst:"../images/"+imageToResize+".gif",
+			width:400,
+			height:300,
+			cropwidth:400,
+			cropheight:300,
+			x:0,
+			y:0
+		}).then(function(image){
+			console.log("Resized Image")
+			// resizeImageCounter++;
+			// console.log(resizeImageCounter, queryTerms.length)
+			// if(resizeImageCounter == queryTerms.length){
+			// 	console.log(resizeImageCounter, queryTerms.length)
+			// 	console.log("Make gif")
+			// 	createGif(filenameVar);
+			// }
+			execImageMagick(imageToResize, filenameVar)
+		}, function(err){
+			console.log(err);
 		})
 	}
 
 	function gifsicleIt(img_name){
 		var filePath = '../images/*.gif'
 		var outFilePath = '../images/anim.gif'
-		execFile(gifsicle, ['-d 200','--loop',outFilePath, filePath], function(err){
+		execFile(gifsicle, ['--explode',filePath], function(err){
 			console.log('combined');
 		})
+		return
+	}
+
+	function execGifsicle(){
+		var cmd = 'gifsicle -d 100 --loop ../images/1.gif ../images/2.gif > anim.gif'
+
+		exec(cmd, function(err){
+			console.log("Error: "+err)
+			console.log("Combined")
+		})
+
+		return
+	}
+
+	function execImageMagick(img_name, filename){
+		//create a unique directory for the gifs
+		fs.mkdirSync('../images/gifconverted/'+filename);
+		var cmd = 'convert -coalesce ../images/'+img_name+'.gif ../images/gifconverted'+filename+'/'+img_name+'%04d.gif'
+		exec(cmd, function(err){
+			console.log(err)
+			console.log("exploded")
+		})
+		return;
 	}
 
 	function explodeGif(img_name){
 		fs.createReadStream("../images/"+img_name+".gif")
 		  .pipe(gif(function(frame){
-		  	frame.pipe(fs.createWriteStream("../images/gifconverted/hello/"+img_name+i+'.gif'))
+		  	frame.pipe(fs.createWriteStream('../images/hello'+i+'.gif'))
 		  }))
 	}
 })
