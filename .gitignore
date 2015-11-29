@@ -1,2 +1,5 @@
 /node_modules
 /config
+/public/images/gif/*
+/public/images/gifgif/*
+/test

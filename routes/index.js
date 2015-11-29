@@ -26,6 +26,8 @@ var gifsicle = require('gifsicle')
 
 var exec = require('child_process').exec;
 
+var rimraf = require('rimraf');
+
 /* GET home page. */
 
 router.post('/imgtogif', function(req,res,next){
@@ -108,6 +110,8 @@ router.post('/imgtogif', function(req,res,next){
 			console.log("Resized Image")
 			resizeImageCounter++;
 			console.log(resizeImageCounter, queryTerms.length)
+			//delete original image once its been resized
+			deleteFile("../images/"+imageToResize+".jpg");
 			if(resizeImageCounter == queryTerms.length){
 				console.log(resizeImageCounter, queryTerms.length)
 				console.log("Make gif")
@@ -124,6 +128,8 @@ router.post('/imgtogif', function(req,res,next){
 		stream.on('close', function(){
 			stream.end();
 			console.log('Made gif!')
+			//delete folder once its been combined to a gif
+			deleteFolder('../images/converted/'+filenameToGif)
 			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
 		pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
@@ -228,6 +234,8 @@ router.post('/giftogif', function(req, res, next){
 			console.log("ERROR: " +err)
 			console.log("EXPLODED GIF: ",explodedGif)
 			console.log("QUERY LENGTH: ", queryTerms.length)
+			// delete file once its been exploded as its no longer needed
+			deleteFile('../images/'+img_name+'.gif')
 			// combine only once all gifs have been exploded
 			if(explodedGif == queryTerms.length){
 				console.log("ALL Exploded")
@@ -239,10 +247,12 @@ router.post('/giftogif', function(req, res, next){
 
 	function combineToGif(filename){
 		console.log("combining to gif")
-		var cmd = 'convert -delay 5 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
+		var cmd = 'convert -delay 10 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED");
+			//delete folders once its been combined to a gif
+			deleteFolder('../images/gifconverted/'+filename)
 			res.send('http://localhost:3000/images/gifgif/'+filename+'.gif');
 		})
 	}
@@ -277,6 +287,21 @@ router.post('/giftogif', function(req, res, next){
 	// 	return
 	// }
 })
+
+function deleteFile(filePath){
+	console.log("DELETING FILE")
+	fs.unlink(filePath, function(err){
+		console.log("Deleted  File")
+	})
+}
+
+function deleteFolder(folderPath){
+	console.log("DELETE FOLDER")
+	rimraf(folderPath, function(err){
+		console.log(err);
+		console.log("Deleted Folder")
+	})
+}
 
 // router.get('/giff', function(req,res,next){
 // 	pngFileStream('../test/frame?.png')
