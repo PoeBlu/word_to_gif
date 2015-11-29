@@ -19,6 +19,11 @@ var request = require('request');
 var shortid = require('shortid');
 var easyimg = require('easyimage');
 
+var gif = require('gif-explode');
+
+var execFile = require('child_process').execFile;
+var gifsicle = require('gifsicle')
+
 /* GET home page. */
 
 router.post('/gifit', function(req,res,next){
@@ -31,7 +36,7 @@ router.post('/gifit', function(req,res,next){
 
 	// return if no query is detected
 	if(queryTerms.length == 0){
-		res.send("no length sent")
+		res.send("no query sent")
 		return
 	}
 
@@ -120,7 +125,7 @@ router.post('/gifit', function(req,res,next){
 			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
 		pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
-		.pipe(encoder.createWriteStream({repeat:0, delay:300, quality:10}))
+		.pipe(encoder.createWriteStream({repeat:0, delay:350, quality:10}))
 		.pipe(stream);
 
 	}
@@ -134,6 +139,72 @@ router.post('/gifit', function(req,res,next){
 	// giphy.search(query, function(err, resp){
 	// 	res.send(resp.data[0].images["original"]);
 	// })
+})
+
+router.post('/giphyit', function(req, res, next){
+	
+	var query = req.body.query;
+
+	var uniqueFilename = shortid.generate();
+
+	//split query on spaces
+	var queryTerms = query.split(/\s+/);
+	console.log(queryTerms)
+	// return if no query is detected
+	if(queryTerms.length == 0){
+		res.send("no length sent")
+		return
+	}
+
+	var imageCounter = 0;
+	var resizeImageCounter = 0;
+
+	console.log("IMG COUNTER: "+imageCounter)
+	console.log("RESIZE COUNTER: "+resizeImageCounter)
+
+	//for each term search flickr and append to a url list
+	for(var i in queryTerms){
+
+		searchGiphy(i);
+		
+	}
+
+	function searchGiphy(index){
+		giphy.search(queryTerms[index], function(err, resp){
+			imageCounter++;
+			console.log("IMG COUNTER: "+imageCounter);
+			var url = resp.data[0].images["original"].url;
+			console.log("URL: "+url);
+			downloadGif(url,uniqueFilename ,imageCounter)
+		})
+	}
+
+	function downloadGif(imageUrl,filename,counter){
+		console.log("Downloading Gif");
+		var img_path = filename+counter;
+		console.log(img_path)
+		request(imageUrl).pipe(fs.createWriteStream("../images/"+img_path+".gif")).on('close', function(){
+			console.log("Downloaded gif")
+			//resizeImage(img_url, counter, filename);
+			//explodeGif(img_url);
+			//gifsicleIt(img_path, counter);
+		})
+	}
+
+	function gifsicleIt(img_name){
+		var filePath = '../images/*.gif'
+		var outFilePath = '../images/anim.gif'
+		execFile(gifsicle, ['-d 200','--loop',outFilePath, filePath], function(err){
+			console.log('combined');
+		})
+	}
+
+	function explodeGif(img_name){
+		fs.createReadStream("../images/"+img_name+".gif")
+		  .pipe(gif(function(frame){
+		  	frame.pipe(fs.createWriteStream("../images/gifconverted/hello/"+img_name+i+'.gif'))
+		  }))
+	}
 })
 
 // router.get('/giff', function(req,res,next){
