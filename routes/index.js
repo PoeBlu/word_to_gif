@@ -163,6 +163,8 @@ router.post('/giphyit', function(req, res, next){
 
 	var downloadedGifCounter = 0;
 
+	var explodedGif = 0;
+
 	console.log("IMG COUNTER: "+imageCounter)
 	console.log("RESIZE COUNTER: "+resizeImageCounter)
 
@@ -251,12 +253,28 @@ router.post('/giphyit', function(req, res, next){
 	function execImageMagick(img_name, filename){
 		//create a unique directory for the gifs
 		fs.mkdirSync('../images/gifconverted/'+filename);
-		var cmd = 'convert -coalesce ../images/'+img_name+'.gif ../images/gifconverted'+filename+'/'+img_name+'%04d.gif'
+		var cmd = 'convert -coalesce ../images/'+img_name+'.gif ../images/gifconverted/'+filename+'/'+img_name+'%04d.gif'
 		exec(cmd, function(err){
+			explodedGif++;
 			console.log(err)
-			console.log("exploded")
+			console.log("EXPLODED GIF: ",explodedGif)
+			console.log("QUERY LENGTH: ", queryTerms.length)
+			if(explodedGif == queryTerms.length){
+				console.log("ALL Exploded")
+				combineToGif(filename);
+			}
 		})
-		return;
+		
+	}
+
+	function combineToGif(filename){
+		console.log("combining to gif")
+		var cmd = 'convert -delay 20 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
+
+		exec(cmd, function(err){
+			console.log("COMBINED");
+			res.send('http://localhost:3000/images/gifgif/'+filename+'.gif');
+		})
 	}
 
 	function explodeGif(img_name){
