@@ -28,7 +28,7 @@ var exec = require('child_process').exec;
 
 /* GET home page. */
 
-router.post('/gifit', function(req,res,next){
+router.post('/imgtogif', function(req,res,next){
 	var query = req.body.query;
 
 	var uniqueFilename = shortid.generate();
@@ -143,7 +143,7 @@ router.post('/gifit', function(req,res,next){
 	// })
 })
 
-router.post('/giphyit', function(req, res, next){
+router.post('/giftogif', function(req, res, next){
 
 	var query = req.body.query;
 
@@ -159,14 +159,10 @@ router.post('/giphyit', function(req, res, next){
 	}
 
 	var imageCounter = 0;
-	var resizeImageCounter = 0;
-
-	var downloadedGifCounter = 0;
-
 	var explodedGif = 0;
 
 	console.log("IMG COUNTER: "+imageCounter)
-	console.log("RESIZE COUNTER: "+resizeImageCounter)
+	console.log("EXPLODED GIF: "+explodedGif)
 
 	//for each term search flickr and append to a url list
 	for(var i in queryTerms){
@@ -190,21 +186,13 @@ router.post('/giphyit', function(req, res, next){
 		var img_path = filename+counter;
 		console.log(img_path)
 		request(imageUrl).pipe(fs.createWriteStream("../images/"+img_path+".gif")).on('close', function(){
-			console.log("Downloaded gif")
-			downloadedGifCounter++;
-			//resizeImage(img_url, counter, filename);
-			//explodeGif(img_url);
-			if(downloadedGifCounter == queryTerms.length){
-				//gifsicleIt(img_path, counter);
-				resizeGif(img_path, counter, filename)
-				//explodeGif(img_path)
-			}
-			//
+			console.log("Downloaded Gif")
+			resizeGif(img_path, counter, filename)		
 		})
 	}
 
 	function resizeGif(imageToResize, imageCounterVar, filenameVar){
-		console.log("Resizing images")
+		console.log("Resizing GIF")
 		
 		easyimg.rescrop({
 			src:"../images/"+imageToResize+".gif",
@@ -216,49 +204,31 @@ router.post('/giphyit', function(req, res, next){
 			x:0,
 			y:0
 		}).then(function(image){
-			console.log("Resized Image")
-			// resizeImageCounter++;
-			// console.log(resizeImageCounter, queryTerms.length)
-			// if(resizeImageCounter == queryTerms.length){
-			// 	console.log(resizeImageCounter, queryTerms.length)
-			// 	console.log("Make gif")
-			// 	createGif(filenameVar);
-			// }
+			console.log("Resized GIF")
 			execImageMagick(imageToResize, filenameVar)
 		}, function(err){
 			console.log(err);
 		})
 	}
 
-	function gifsicleIt(img_name){
-		var filePath = '../images/*.gif'
-		var outFilePath = '../images/anim.gif'
-		execFile(gifsicle, ['--explode',filePath], function(err){
-			console.log('combined');
-		})
-		return
-	}
-
-	function execGifsicle(){
-		var cmd = 'gifsicle -d 100 --loop ../images/1.gif ../images/2.gif > anim.gif'
-
-		exec(cmd, function(err){
-			console.log("Error: "+err)
-			console.log("Combined")
-		})
-
-		return
-	}
+	
 
 	function execImageMagick(img_name, filename){
-		//create a unique directory for the gifs
-		fs.mkdirSync('../images/gifconverted/'+filename);
-		var cmd = 'convert -coalesce ../images/'+img_name+'.gif ../images/gifconverted/'+filename+'/'+img_name+'%04d.gif'
+		//create a unique directory for the gifs if it doesnt exist
+
+		var dir = '../images/gifconverted/'+filename;
+
+		if(!fs.existsSync(dir)){
+			fs.mkdirSync(dir);
+		}
+		
+		var cmd = 'convert -coalesce ../images/'+img_name+'.gif '+dir+'/'+img_name+'%04d.gif'
 		exec(cmd, function(err){
 			explodedGif++;
-			console.log(err)
+			console.log("ERROR: " +err)
 			console.log("EXPLODED GIF: ",explodedGif)
 			console.log("QUERY LENGTH: ", queryTerms.length)
+			// combine only once all gifs have been exploded
 			if(explodedGif == queryTerms.length){
 				console.log("ALL Exploded")
 				combineToGif(filename);
@@ -269,7 +239,7 @@ router.post('/giphyit', function(req, res, next){
 
 	function combineToGif(filename){
 		console.log("combining to gif")
-		var cmd = 'convert -delay 20 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
+		var cmd = 'convert -delay 5 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED");
@@ -277,12 +247,35 @@ router.post('/giphyit', function(req, res, next){
 		})
 	}
 
-	function explodeGif(img_name){
-		fs.createReadStream("../images/"+img_name+".gif")
-		  .pipe(gif(function(frame){
-		  	frame.pipe(fs.createWriteStream('../images/hello'+i+'.gif'))
-		  }))
-	}
+	// NOT WORKING - uses gif-explode package
+	// function explodeGif(img_name){
+	// 	fs.createReadStream("../images/"+img_name+".gif")
+	// 	  .pipe(gif(function(frame){
+	// 	  	frame.pipe(fs.createWriteStream('../images/hello'+i+'.gif'))
+	// 	  }))
+	// }
+
+
+	// NOT WORKING - using gifsicle package
+	// function gifsicleIt(img_name){
+	// 	var filePath = '../images/*.gif'
+	// 	var outFilePath = '../images/anim.gif'
+	// 	execFile(gifsicle, ['--explode',filePath], function(err){
+	// 		console.log('combined');
+	// 	})
+	// 	return
+	// }
+
+	// function execGifsicle(){
+	// 	var cmd = 'gifsicle -d 100 --loop ../images/1.gif ../images/2.gif > anim.gif'
+
+	// 	exec(cmd, function(err){
+	// 		console.log("Error: "+err)
+	// 		console.log("Combined")
+	// 	})
+
+	// 	return
+	// }
 })
 
 // router.get('/giff', function(req,res,next){

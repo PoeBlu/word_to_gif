@@ -27,11 +27,12 @@ $(document).ready(function(){
 		if(!searchGiphy){
 
 			$.ajax({
-				"url":"http://localhost:3000/gifit",
+				"url":"http://localhost:3000/imgtogif",
 				"method": "POST",
 				"data":{"query":query}
 			})
 			.done(function(resp){
+				console.log("GOT GIF FROM IMGS")
 				console.log(resp)
 			})
 			.error(function(err){
@@ -40,11 +41,12 @@ $(document).ready(function(){
 
 		} else {
 			$.ajax({
-				"url":"http://localhost:3000/giphyit",
+				"url":"http://localhost:3000/giftogif",
 				"method": "POST",
 				"data":{"query":query}
 			})
 			.done(function(resp){
+				console.log("GOT GIF FROM GIFS")
 				console.log(resp)
 			})
 			.error(function(err){
