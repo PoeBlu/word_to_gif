@@ -23,10 +23,6 @@ var exec = require('child_process').exec;
 
 var rimraf = require('rimraf');
 
-// var gif = require('gif-explode');
-// var execFile = require('child_process').execFile;
-// var gifsicle = require('gifsicle')
-
 /* GET home page. */
 
 router.post('/imgtogif', function(req,res,next){
