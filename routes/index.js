@@ -160,15 +160,6 @@ router.post('/imgtogif', function(req,res,next){
 
 	}
 
-
-	//function down
-
-
-	//search images and stitch them together
-	//res.send("done")
-	// giphy.search(query, function(err, resp){
-	// 	res.send(resp.data[0].images["original"]);
-	// })
 })
 
 router.post('/giftogif', function(req, res, next){
