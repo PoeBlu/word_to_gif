@@ -175,7 +175,7 @@ router.post('/imgtogif', function(req,res,next){
 			console.log("COMBINED to gif");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/converted/'+filenameToGif)
-			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
+			res.end('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
 
 	}

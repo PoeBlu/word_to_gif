@@ -1,14 +1,38 @@
 extends layout
 
 block content
-  h1 Word to GIF
-  p Create a GIF
-  p Search From
-  a(href="#", id="searchGiphy") Giphy
-  br
-  a(href="#", id="searchBing") Bing
-  br
-  a(href="#", id="searchFlickr") Flickr
-  form(id='image')
-    input(type='text',id='query',class='gif-query', placeholder='Enter your text')
-    input(type='submit', value='submit')
+  div(class='container-fixed')
+    div(class='row')
+      div(class='col-md-2')
+      div(class='col-md-8')
+        h1(class='text-center') GIF it to.me
+      div(class='col-md-2')
+    div(class='row')
+      div(class='col-md-2')
+      div(class='col-md-8')
+        h2 Step 1 : Choose your Source
+        ul(class='list-inline')
+          li
+            a(href="#", id="searchGiphy", class='btn btn-default btn-lg') Giphy
+          li
+            a(href="#", id="searchBing", class='btn btn-default btn-lg') Bing
+          li
+            a(href="#", id="searchFlickr", class='btn btn-default btn-lg') Flickr
+      div(class='col-md-2')
+    div(class='row')
+      div(class='col-md-2')
+      div(class='col-md-8')
+        h2 Step 2 : Type out your GIF
+        form(id='gifit', class='form-inline')
+          div(class='form-group')
+            input(type='text',id='query',class='form-control input-lg input-block gif-query', placeholder='Enter your text')
+          div(class='form-group')
+            input(type='submit',class='btn btn-success btn-lg' value='submit', cl)
+      div(class='col-md-2')
+    div(class='row')
+      div(class='col-md-2')
+      div(class='col-md-8')
+        h2 Your Brand New GIF
+        img(src='', id='newgif',class='img-responsive center-block' width='400')
+        a(href='', id='newgifurl',target='blank', class='gifurl')
+      div(class='col-md-2')

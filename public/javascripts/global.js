@@ -44,7 +44,8 @@ $(document).ready(function(){
 			})
 			.done(function(resp){
 				console.log("GOT GIF FROM IMGS")
-				console.log(resp)
+				//console.log(resp)
+				showGif(resp)
 			})
 			.error(function(err){
 				console.log(err)
@@ -58,7 +59,8 @@ $(document).ready(function(){
 			})
 			.done(function(resp){
 				console.log("GOT GIF FROM GIFS")
-				console.log(resp)
+				//console.log(resp)
+				showGif(resp)
 			})
 			.error(function(err){
 				console.log(err)
@@ -66,5 +68,13 @@ $(document).ready(function(){
 		}
 
 	})
+
+	function showGif(resp){
+		console.log(resp);
+		$("#newgif").attr('src',resp);
+		$("#newgifurl").attr('href',resp);
+		$("#newgifurl").html(resp)
+		
+	}
 
 })
