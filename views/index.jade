@@ -1,11 +1,14 @@
 extends layout
 
 block content
+  div(class='loading')
+    h3 Creating your GIF...
   div(class='container-fixed')
     div(class='row')
       div(class='col-md-2')
       div(class='col-md-8')
-        h1(class='text-center') GIF it to.me
+        h1(class='text-center')
+          img(src='/images/logo.png', class='logo')
       div(class='col-md-2')
     div(class='row')
       div(class='col-md-2')
@@ -13,11 +16,11 @@ block content
         h2 Step 1 : Choose your Source
         ul(class='list-inline')
           li
-            a(href="#", id="searchGiphy", class='btn btn-default btn-lg') Giphy
+            a(href="#", id="searchGiphy", class='giphy btn btn-default btn-lg') Giphy
           li
-            a(href="#", id="searchBing", class='btn btn-default btn-lg') Bing
+            a(href="#", id="searchBing", class='bing btn btn-default btn-lg') Bing
           li
-            a(href="#", id="searchFlickr", class='btn btn-default btn-lg') Flickr
+            a(href="#", id="searchFlickr", class='flickr btn btn-default btn-lg') Flickr
       div(class='col-md-2')
     div(class='row')
       div(class='col-md-2')
@@ -27,12 +30,12 @@ block content
           div(class='form-group')
             input(type='text',id='query',class='form-control input-lg input-block gif-query', placeholder='Enter your text')
           div(class='form-group')
-            input(type='submit',class='btn btn-success btn-lg' value='submit', cl)
+            input(type='submit',class='btn btn-success btn-lg submit-query' value='submit', cl)
       div(class='col-md-2')
     div(class='row')
       div(class='col-md-2')
-      div(class='col-md-8')
-        h2 Your Brand New GIF
+      div(class='col-md-8 result')
+        h2(class='result') Your Brand New GIF
         img(src='', id='newgif',class='img-responsive center-block' width='400')
-        a(href='', id='newgifurl',target='blank', class='gifurl')
+        a(href='', id='newgifurl',target='blank', class='text-center gifurl')
       div(class='col-md-2')

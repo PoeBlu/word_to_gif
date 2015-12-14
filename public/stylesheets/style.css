@@ -1,8 +1,76 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+h1 {
+	margin-bottom: 35px;
 }
 
-a {
-  color: #00B7FF;
+h2 {
+	font-weight: 300;
+	font-size: 16px;
+	margin-bottom:10px;
+}
+
+.row {
+	text-align: center;
+}
+
+ul {
+	margin-top:10px;
+}
+
+.btn, .form-control {
+	border-radius: 0;
+}
+
+.result {
+	display: none;
+}
+
+.bing, .bing:hover, .bing:active, .bing:visited {
+	background: #ffd400;
+	color: black;
+	border: none;
+}
+
+.giphy, .giphy:hover, .giphy:active, .giphy:visited {
+	background: #000;
+	color: white;
+	border: none;
+}
+
+.flickr, .flickr:hover , .flickr:active, .flickr:visited{
+	background: #0063dc;
+	color: white;
+	border: none;
+}
+
+.selected, .selected:hover, .selected:active, .selected:visited  {
+	/*border: 5px solid #ec008c;*/
+	box-shadow: inset 0 0 0 5px #ec008c;
+}
+
+.loading {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	padding-top: 15%;
+	background: rgba(0,0,0,0.8);
+	z-index: 10;
+	color: white;
+	display: none;
+}
+
+.submit-query, .submit-query:hover, .submit-query:active {
+	background: #ec008c;
+	color: #fff;
+	border: 1px solid #ec008c;
+}
+
+.result {
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+#newgifurl {
+	background: #ec008c;
+	color:white;
 }
