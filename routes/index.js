@@ -86,7 +86,7 @@ router.post('/imgtogif', function(req,res,next){
 	function downloadImage(imageUrl,filename,counter){
 		console.log("Downloading image");
 		var img_url = filename+counter;
-		request(imageUrl).pipe(fs.createWriteStream("../images/"+img_url+".jpg")).on('close', function(){
+		request(imageUrl).pipe(fs.createWriteStream("./images/"+img_url+".jpg")).on('close', function(){
 			console.log("Downloaded")
 			resizeImage(img_url, counter, filename);
 		})
@@ -95,18 +95,18 @@ router.post('/imgtogif', function(req,res,next){
 	function resizeImage(imageToResize, imageCounterVar, filenameVar){
 		console.log("Resizing images")
 
-		var dir = '../images/converted/'+filenameVar;
+		var dir = './images/converted/'+filenameVar;
 
 		if(!fs.existsSync(dir)){
 			fs.mkdirSync(dir);
 		}
 
-		var cmd = "convert ../images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 "+dir+"/"+imageToResize+".jpg"
+		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 "+dir+"/"+imageToResize+".jpg"
 
 		exec(cmd, function(err){
 			console.log('RESIZED JPG');
 			resizeImageCounter++;
-			deleteFile("../images/"+imageToResize+".jpg");
+			deleteFile("./images/"+imageToResize+".jpg");
 			if(resizeImageCounter == queryTerms.length){
 				console.log(resizeImageCounter, queryTerms.length)
 				console.log("Make gif")
@@ -153,12 +153,12 @@ router.post('/imgtogif', function(req,res,next){
 		// .pipe(encoder.createWriteStream({repeat:0, delay:350, quality:10}))
 		// .pipe(stream);
 
-		var cmd = 'convert -delay 50 -loop 0 ../images/converted/'+filenameToGif+'/'+filenameToGif+'*.jpg ../public/images/gif/'+filenameToGif+'.gif';
+		var cmd = 'convert -delay 50 -loop 0 ./images/converted/'+filenameToGif+'/'+filenameToGif+'*.jpg ./public/images/gif/'+filenameToGif+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED to gif");
 			//delete folders once its been combined to a gif
-			deleteFolder('../images/converted/'+filenameToGif)
+			deleteFolder('./images/converted/'+filenameToGif)
 			res.send('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
 		})
 
@@ -221,21 +221,51 @@ router.post('/giftogif', function(req, res, next){
 		console.log("Downloading Gif");
 		var img_path = filename+counter;
 		console.log(img_path)
-		request(imageUrl).pipe(fs.createWriteStream("../images/"+img_path+".gif")).on('close', function(){
+		request(imageUrl).pipe(fs.createWriteStream("./images/"+img_path+".gif")).on('close', function(){
 			console.log("Downloaded Gif")
-			resizeGif(img_path, counter, filename)		
+			//resizeGif(img_path, counter, filename);
+			explodeImageMagick(img_path, filename);		
 		})
+	}
+
+	function explodeImageMagick(img_name, filename){
+		//create a unique directory for the gifs if it doesnt exist
+		console.log('Exploding gif')
+		var dir = './images/gifconverted/'+filename;
+
+		if(!fs.existsSync(dir)){
+			fs.mkdirSync(dir);
+		}
+		
+		var cmd = 'convert -coalesce ./images/'+img_name+'.gif '+dir+'/'+img_name+'%04d.gif'
+		exec(cmd, function(err){
+			console.log('Exploded Gif');
+
+			explodedGif++;
+			console.log("ERROR: " +err)
+			console.log("EXPLODED GIF: ",explodedGif)
+			console.log("QUERY LENGTH: ", queryTerms.length)
+			// delete file once its been exploded as its no longer needed
+			deleteFile('./images/'+img_name+'.gif')
+			// combine only once all gifs have been exploded
+			if(explodedGif == queryTerms.length){
+				console.log("ALL Exploded")
+				resizeExplodedGifs(filename);
+				//combineToGif(filename);
+			}
+		})
+		
 	}
 
 	function resizeGif(imageToResize, imageCounterVar, filenameVar){
 		console.log("Resizing GIF")
 		
-		var cmd = "convert ../images/"+imageToResize+".gif -resize 400x300^ -gravity center -extent 400x300 ../images/"+imageToResize+".gif"
+		// var cmd = "convert ./images/"+imageToResize+".gif -resize 400x300^ -gravity center -extent 400x300 ./images/"+imageToResize+".gif"
 
-		exec(cmd, function(err){
-			console.log('RESIZED GIF');
-			explodeImageMagick(imageToResize, filenameVar)
-		})
+		// exec(cmd, function(err){
+		// 	console.log('RESIZED GIF');
+		// 	//explodeImageMagick(imageToResize, filenameVar)
+		// })
 
 		// easyimg.rescrop({
 		// 	src:"../images/"+imageToResize+".gif",
@@ -255,41 +285,30 @@ router.post('/giftogif', function(req, res, next){
 
 	
 
-	function explodeImageMagick(img_name, filename){
-		//create a unique directory for the gifs if it doesnt exist
-		console.log('Exploding gif')
-		var dir = '../images/gifconverted/'+filename;
+	
 
-		if(!fs.existsSync(dir)){
-			fs.mkdirSync(dir);
-		}
-		
-		var cmd = 'convert -coalesce ../images/'+img_name+'.gif '+dir+'/'+img_name+'%04d.gif'
+	function resizeExplodedGifs(filename){
+		console.log("RESIZING IMAGES");
+		// make new folder to save resized images to
+		var dir = "./images/gifconverted/"+filename+"/resized";
+		fs.mkdirSync(dir);
+		var cmd = "convert ./images/gifconverted/"+filename+"/"+filename+"*.gif -resize 400x300^ -gravity center -extent 400x300 "+dir+"/"+filename+"%04d.gif"
+
 		exec(cmd, function(err){
-			console.log('Exploded Gif')
-			explodedGif++;
-			console.log("ERROR: " +err)
-			console.log("EXPLODED GIF: ",explodedGif)
-			console.log("QUERY LENGTH: ", queryTerms.length)
-			// delete file once its been exploded as its no longer needed
-			deleteFile('../images/'+img_name+'.gif')
-			// combine only once all gifs have been exploded
-			if(explodedGif == queryTerms.length){
-				console.log("ALL Exploded")
-				combineToGif(filename);
-			}
+			console.log('RESIZED GIFS');
+			combineToGif(filename);
+			//explodeImageMagick(imageToResize, filenameVar)
 		})
-		
 	}
 
 	function combineToGif(filename){
 		console.log("combining to gif")
-		var cmd = 'convert -delay 7 -loop 0 ../images/gifconverted/'+filename+'/'+filename+'*.gif ../public/images/gifgif/'+filename+'.gif';
+		var cmd = 'convert -delay 7 -loop 0 ./images/gifconverted/'+filename+'/resized/'+filename+'*.gif ./public/images/gifgif/'+filename+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED");
 			//delete folders once its been combined to a gif
-			deleteFolder('../images/gifconverted/'+filename)
+			deleteFolder('./images/gifconverted/'+filename)
 			res.send('http://localhost:3000/images/gifgif/'+filename+'.gif');
 		})
 	}
