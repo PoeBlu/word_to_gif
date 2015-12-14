@@ -18,6 +18,7 @@
     "giphy-api": "^1.1.11",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
+    "node-bing-api": "^2.3.0",
     "node-flickr": "^1.0.0",
     "png-file-stream": "^1.0.0",
     "request": "^2.67.0",

@@ -4,6 +4,8 @@ $(document).ready(function(){
 
 	var searchGiphy = false;
 
+	var searchApi = 'bing';
+
 	$("#check").on('click', function(event){
 		if($(this).is(":checked")){
 			searchGiphy = true;
@@ -29,7 +31,7 @@ $(document).ready(function(){
 			$.ajax({
 				"url":"http://localhost:3000/imgtogif",
 				"method": "POST",
-				"data":{"query":query}
+				"data":{"query":query, "searchApi":searchApi}
 			})
 			.done(function(resp){
 				console.log("GOT GIF FROM IMGS")

@@ -4,6 +4,8 @@ var config = require('../config/config');
 
 var giphy = require('giphy-api')(config.key);
 
+var Bing = require('node-bing-api')({accKey:config.bing});
+
 var GIFEncoder = require('gifencoder');
 
 var pngFileStream = require('png-file-stream');
@@ -27,6 +29,8 @@ var rimraf = require('rimraf');
 
 router.post('/imgtogif', function(req,res,next){
 	var query = req.body.query;
+	var searchApi = req.body.searchApi;
+
 	query = query.trim();
 
 	var uniqueFilename = shortid.generate();
@@ -49,8 +53,24 @@ router.post('/imgtogif', function(req,res,next){
 	console.log("RESIZE COUNTER: "+resizeImageCounter)
 
 	//for each term search flickr and append to a url list
-	for(var i in queryTerms){
-		searchFlickr(i);
+	if(searchApi == 'bing'){
+		for(var i in queryTerms){
+			searchBing(i);
+		}
+	} else if (searchApi == 'flickr'){
+		for(var i in queryTerms){
+			searchFlickr(i);
+		}
+	}
+
+	function searchBing(index){
+		console.log("Search Bing");
+		Bing.images(queryTerms[index],{top:25}, function(bingerror, bingres, bingbody){
+			var randomImg = bingbody.d.results[Math.floor(Math.random()*(bingbody.d.results.length))]
+			var url = randomImg.MediaUrl;
+			imageCounter++;
+			downloadImage(url, uniqueFilename ,imageCounter)
+		})
 	}
 
 	function searchFlickr(index) {
