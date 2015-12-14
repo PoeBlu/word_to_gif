@@ -3,10 +3,12 @@ extends layout
 block content
   h1 Word to GIF
   p Create a GIF
-  a(href='#',id='giphysearch') giphyy
+  p Search From
+  a(href="#", id="searchGiphy") Giphy
+  br
+  a(href="#", id="searchBing") Bing
+  br
+  a(href="#", id="searchFlickr") Flickr
   form(id='image')
-    input(type='checkbox',id='check', val='giphy') 
-    p Giphy
-    br
     input(type='text',id='query',class='gif-query', placeholder='Enter your text')
     input(type='submit', value='submit')

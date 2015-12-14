@@ -1,18 +1,27 @@
 $(document).ready(function(){
 
-	console.log("hello");
-
 	var searchGiphy = false;
 
 	var searchApi = 'bing';
 
-	$("#check").on('click', function(event){
-		if($(this).is(":checked")){
-			searchGiphy = true;
-		} else {
-			searchGiphy = false;
-		}
-		console.log(searchGiphy)
+	$("body").on('click','#searchGiphy', function(event){
+		event.preventDefault();
+		searchGiphy = !searchGiphy;
+		console.log(searchApi, searchGiphy);
+	})
+
+	$("body").on('click', '#searchFlickr', function(event){
+		event.preventDefault();
+		searchApi = 'flickr';	
+		searchGiphy = false;
+		console.log(searchApi, searchGiphy);	
+	})
+
+	$("body").on('click', '#searchBing', function(event){
+		event.preventDefault();
+		searchApi = 'bing';
+		searchGiphy = false;
+		console.log(searchApi, searchGiphy);
 	})
 
 	$("form").on('submit', function(event){
@@ -56,22 +65,6 @@ $(document).ready(function(){
 			})
 		}
 
-	})
-
-	$("#giphysearch").on('click', function(event){
-		event.preventDefault();
-
-		$.ajax({
-				"url":"http://localhost:3000/s",
-				"method": "POST"
-			})
-			.done(function(resp){
-				console.log("GOT GIF FROM IMGS")
-				console.log(resp)
-			})
-			.error(function(err){
-				console.log(err)
-			})
 	})
 
 })
