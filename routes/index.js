@@ -23,10 +23,6 @@ var exec = require('child_process').exec;
 
 var rimraf = require('rimraf');
 
-// var gif = require('gif-explode');
-// var execFile = require('child_process').execFile;
-// var gifsicle = require('gifsicle')
-
 /* GET home page. */
 
 router.post('/imgtogif', function(req,res,next){
@@ -164,15 +160,6 @@ router.post('/imgtogif', function(req,res,next){
 
 	}
 
-
-	//function down
-
-
-	//search images and stitch them together
-	//res.send("done")
-	// giphy.search(query, function(err, resp){
-	// 	res.send(resp.data[0].images["original"]);
-	// })
 })
 
 router.post('/giftogif', function(req, res, next){
