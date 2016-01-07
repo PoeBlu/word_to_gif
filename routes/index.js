@@ -38,11 +38,10 @@ router.post('/imgtogif', function(req,res,next){
 	//split query on spaces
 	var queryTerms = query.split(/\s+/);
 
+	queryTermsLength = queryTerms.length;
+
 	// return if no query is detected
-	if(queryTerms.length == 0){
-		res.send("no query sent")
-		return
-	}
+	checkQueryLength();
 
 	console.log(queryTerms)
 
@@ -66,7 +65,17 @@ router.post('/imgtogif', function(req,res,next){
 	function searchBing(index){
 		console.log("Search Bing");
 		Bing.images(queryTerms[index],{top:25}, function(bingerror, bingres, bingbody){
+			if(!bingbody || bingerror){  //if no results returned then skip
+				queryTermsLength--; //reduce length of acceptable query terms
+				checkQueryLength(); //do this so if all are unacceptable words then it the post call returns something
+				return; 
+			}
 			var randomImg = bingbody.d.results[Math.floor(Math.random()*(bingbody.d.results.length))]
+			if(!randomImg){
+				queryTermsLength--;
+				checkQueryLength();
+				return;
+			}
 			var url = randomImg.MediaUrl;
 			imageCounter++;
 			downloadImage(url, uniqueFilename ,imageCounter)
@@ -85,19 +94,38 @@ router.post('/imgtogif', function(req,res,next){
 			"media":"photos"
 		}, function(err,result){
 			if(err){
-				return console.error(err)
+				queryTermsLength--; //reduce length of acceptable query terms
+				checkQueryLength();
+				return;
+				//return console.error(err)
 			}
 
-			imageCounter++;
+			
 
 			var response = result.photos.photo[0]
+
+			if(!response){
+				queryTermsLength--;
+				checkQueryLength();
+				return;
+			}
+
 			var url = "https://farm"+response["farm"]+".staticflickr.com/"+response["server"]+"/"+response["id"]+"_"+response["secret"]+".jpg";
 			console.log(url);
+			imageCounter++;
 
 			//download the image
 			downloadImage(url, uniqueFilename ,imageCounter)
 		})
 	}
+
+	function checkQueryLength(){
+		if(queryTermsLength == 0){
+			res.send("no query sent")
+			return
+		}
+	}
+	
 
 	function downloadImage(imageUrl,filename,counter){
 		console.log("Downloading image");
@@ -123,8 +151,8 @@ router.post('/imgtogif', function(req,res,next){
 			console.log('RESIZED JPG');
 			resizeImageCounter++;
 			deleteFile("./images/"+imageToResize+".jpg");
-			if(resizeImageCounter == queryTerms.length){
-				console.log(resizeImageCounter, queryTerms.length)
+			if(resizeImageCounter == queryTermsLength){
+				console.log(resizeImageCounter, queryTermsLength)
 				console.log("Make gif")
 				createGif(filenameVar);
 			}
