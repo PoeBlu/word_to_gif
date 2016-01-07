@@ -16,6 +16,10 @@ ul {
 	margin-top:10px;
 }
 
+.logo {
+	width: 300px;
+}
+
 .btn, .form-control {
 	border-radius: 0;
 }
@@ -24,19 +28,19 @@ ul {
 	display: none;
 }
 
-.bing, .bing:hover, .bing:active, .bing:visited {
+.bing, .bing:hover, .bing:active, .bing:visited, .bing:focus {
 	background: #ffd400;
 	color: black;
 	border: none;
 }
 
-.giphy, .giphy:hover, .giphy:active, .giphy:visited {
+.giphy, .giphy:hover, .giphy:active, .giphy:visited, .giphy:focus {
 	background: #000;
 	color: white;
 	border: none;
 }
 
-.flickr, .flickr:hover , .flickr:active, .flickr:visited{
+.flickr, .flickr:hover , .flickr:active, .flickr:visited, .flickr:focus{
 	background: #0063dc;
 	color: white;
 	border: none;
@@ -65,7 +69,19 @@ ul {
 	display: none;
 }
 
-.submit-query, .submit-query:hover, .submit-query:active {
+.submit-query, .submit-query:active {
+	background: #ec008c;
+	color: #fff;
+	border: 1px solid #ec008c;
+}
+
+ .submit-query:hover {
+ 	background: #d3007d;
+	color: #fff;
+	border: 1px solid #d3007d;
+ }
+
+.submit-query:focus {
 	background: #ec008c;
 	color: #fff;
 	border: 1px solid #ec008c;

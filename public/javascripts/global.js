@@ -9,6 +9,8 @@ $(document).ready(function(){
 	var giphy = $("#searchGiphy");
 	var flickr = $("#searchFlickr")
 
+	var maxQueryAllowed = 5;
+
 	$("body").on('click','#searchGiphy', function(event){
 		event.preventDefault();
 		searchGiphy = !searchGiphy;
@@ -49,6 +51,15 @@ $(document).ready(function(){
 			return;
 		}
 
+		// ensure only max 6 words are sent
+		query = query.split(" ")
+		if(query.length > maxQueryAllowed){
+			query = query.slice(0,maxQueryAllowed)
+		}
+
+		query = query.join(" ");
+
+
 		loading.show();
 
 		if(!searchGiphy){
@@ -62,7 +73,11 @@ $(document).ready(function(){
 				console.log("GOT GIF FROM IMGS")
 				//console.log(resp)
 				loading.hide();
-				showGif(resp)
+				if(resp!='no'){
+					showGif(resp)
+				} else {
+					alertUser();
+				}
 				
 			})
 			.error(function(err){
@@ -81,7 +96,11 @@ $(document).ready(function(){
 				console.log("GOT GIF FROM GIFS")
 				//console.log(resp)
 				loading.hide();
-				showGif(resp)
+				if(resp!='no'){
+					showGif(resp)
+				}else{
+					alertUser();
+				}
 			})
 			.error(function(err){
 				console.log(err)
@@ -91,6 +110,10 @@ $(document).ready(function(){
 		}
 
 	})
+
+	function alertUser(){
+		alert("Looks like there was an issue. Try different words")
+	}
 
 	function showGif(resp){
 		console.log(resp);

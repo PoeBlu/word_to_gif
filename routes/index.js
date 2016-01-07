@@ -121,7 +121,7 @@ router.post('/imgtogif', function(req,res,next){
 
 	function checkQueryLength(){
 		if(queryTermsLength == 0){
-			res.send("no query sent")
+			res.send("no")
 			return
 		}
 	}
@@ -205,7 +205,7 @@ router.post('/imgtogif', function(req,res,next){
 			console.log("COMBINED to gif");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/converted/'+filenameToGif)
-			res.end('http://localhost:3000/images/gif/'+finalName+'.gif');
+			res.send('http://localhost:3000/images/gif/'+finalName+'.gif');
 		})
 
 	}
@@ -241,7 +241,7 @@ router.post('/giftogif', function(req, res, next){
 
 	function checkQueryLength(){
 		if(queryTermsLength == 0){
-			res.send("no query sent")
+			res.send("no")
 			return
 		}
 	}
