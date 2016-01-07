@@ -196,14 +196,16 @@ router.post('/imgtogif', function(req,res,next){
 		// pngFileStream('../images/converted/'+filenameToGif+'/'+filenameToGif+'?.png')
 		// .pipe(encoder.createWriteStream({repeat:0, delay:350, quality:10}))
 		// .pipe(stream);
-
-		var cmd = 'convert -delay 50 -loop 0 ./images/converted/'+filenameToGif+'/'+filenameToGif+'*.jpg ./public/images/gif/'+filenameToGif+'.gif';
+		var name = queryTerms.join("")
+		var finalName = filenameToGif+'-'+name;
+		//name = filenameToGif+name;
+		var cmd = 'convert -delay 50 -loop 0 ./images/converted/'+filenameToGif+'/'+filenameToGif+'*.jpg ./public/images/gif/'+finalName+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED to gif");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/converted/'+filenameToGif)
-			res.end('http://localhost:3000/images/gif/'+filenameToGif+'.gif');
+			res.end('http://localhost:3000/images/gif/'+finalName+'.gif');
 		})
 
 	}
@@ -338,13 +340,15 @@ router.post('/giftogif', function(req, res, next){
 
 	function combineToGif(filename){
 		console.log("combining to gif")
-		var cmd = 'convert -delay 7 -loop 0 ./images/gifconverted/'+filename+'/resized/'+filename+'*.gif ./public/images/gifgif/'+filename+'.gif';
+		var name = queryTerms.join("")
+		var finalName = filename+'-'+name
+		var cmd = 'convert -delay 7 -loop 0 ./images/gifconverted/'+filename+'/resized/'+filename+'*.gif ./public/images/gifgif/'+finalName+'.gif';
 
 		exec(cmd, function(err){
 			console.log("COMBINED");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/gifconverted/'+filename)
-			res.send('http://localhost:3000/images/gifgif/'+filename+'.gif');
+			res.send('http://localhost:3000/images/gifgif/'+finalName+'.gif');
 		})
 	}
 
