@@ -12,7 +12,7 @@ $(document).ready(function(){
 	var maxQueryAllowed = 5;
 
 	$(".examples").typed({
-		strings: ["cat woman eats giraffe^300","small-girl cycles through wormhole^300","man loves burger^300","justin-bieber slaps pizza^300","think funny thoughts^300","donkey walks through fire rainbow^300"],
+		strings: ["donald-trump eats giraffe^300","clinton cycles through wormhole^300","steve-martin loves burger^300","justin-bieber slaps pizza^300","think funny thoughts^300","donkey walks through fire rainbow^300"],
 		showCursor: false,
 		loop: true,
 		typeSpeed:5,
