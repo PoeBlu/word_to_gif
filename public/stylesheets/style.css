@@ -45,6 +45,16 @@ ul {
 	border-radius: 0;
 }
 
+.btn:focus{
+	outline: none;
+}
+
+.form-control:focus {
+	border-color: #aaa;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
 .result {
 	display: none;
 }
