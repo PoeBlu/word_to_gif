@@ -222,11 +222,9 @@ router.post('/giftogif', function(req, res, next){
 	//split query on spaces
 	var queryTerms = query.split(/\s+/);
 	console.log(queryTerms)
+	var queryTermsLength = queryTerms.length;
 	// return if no query is detected
-	if(queryTerms.length == 0){
-		res.send("no length sent")
-		return
-	}
+	checkQueryLength();
 
 	var imageCounter = 0;
 	var explodedGif = 0;
@@ -241,13 +239,34 @@ router.post('/giftogif', function(req, res, next){
 		
 	}
 
+	function checkQueryLength(){
+		if(queryTermsLength == 0){
+			res.send("no query sent")
+			return
+		}
+	}
+
 	function searchGiphy(index){
 		giphy.search(queryTerms[index], function(err, resp){
-			imageCounter++;
+			
+			if(err || !resp){
+				queryTermsLength--;
+				checkQueryLength();
+				return;
+			}
+
 			console.log("IMG COUNTER: "+imageCounter);
 			// pick random gif from the array of returned gifs
 			var randomGif = resp.data[Math.floor(Math.random()*(resp.data.length))]
+
+			if(!randomGif){
+				queryTermsLength--;
+				checkQueryLength();
+				return;
+			}
+
 			var url = randomGif.images['original'].url
+			imageCounter++;
 			//var url = resp.data[0].images['original'].url;
 			console.log("URL: "+url);
 			downloadGif(url,uniqueFilename ,imageCounter)
@@ -281,11 +300,11 @@ router.post('/giftogif', function(req, res, next){
 			explodedGif++;
 			console.log("ERROR: " +err)
 			console.log("EXPLODED GIF: ",explodedGif)
-			console.log("QUERY LENGTH: ", queryTerms.length)
+			console.log("QUERY LENGTH: ", queryTermsLength)
 			// delete file once its been exploded as its no longer needed
 			deleteFile('./images/'+img_name+'.gif')
 			// combine only once all gifs have been exploded
-			if(explodedGif == queryTerms.length){
+			if(explodedGif == queryTermsLength){
 				console.log("ALL Exploded")
 				resizeExplodedGifs(filename);
 				//combineToGif(filename);
