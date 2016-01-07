@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 	var searchGiphy = false;
 
-	var searchApi = 'bing';
+	var searchApi = 'flickr';
 
 	var loading = $(".loading")
 	var bing = $("#searchBing");
