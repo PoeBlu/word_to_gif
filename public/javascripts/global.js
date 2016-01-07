@@ -12,7 +12,7 @@ $(document).ready(function(){
 	var maxQueryAllowed = 5;
 
 	$(".examples").typed({
-		strings: ["cat woman eats giraffe^300","woman cycles through wormhole^300","man loves burger^300","justin-bieber slaps pizza^300","think funny thoughts^300","donkey walks through fire rainbow^300"],
+		strings: ["cat woman eats giraffe^300","small-girl cycles through wormhole^300","man loves burger^300","justin-bieber slaps pizza^300","think funny thoughts^300","donkey walks through fire rainbow^300"],
 		showCursor: false,
 		loop: true,
 		typeSpeed:5,
@@ -67,6 +67,9 @@ $(document).ready(function(){
 		query = query.split(" ")
 		if(query.length > maxQueryAllowed){
 			query = query.slice(0,maxQueryAllowed)
+		} else if(query.length == 1){
+			alert("A one word GIF is just a normal image. Give me more than one word.");
+			return;
 		}
 
 		query = query.join(" ");
