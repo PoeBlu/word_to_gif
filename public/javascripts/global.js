@@ -11,6 +11,14 @@ $(document).ready(function(){
 
 	var maxQueryAllowed = 5;
 
+	$(".examples").typed({
+		strings: ["cat woman eats giraffe^300","woman cycles through wormhole^300","man loves burger^300","justin-bieber slaps pizza^300","think funny thoughts^300","donkey walks through fire rainbow^300"],
+		showCursor: false,
+		loop: true,
+		typeSpeed:5,
+		backSpeed:0
+	})
+
 	$("body").on('click','#searchGiphy', function(event){
 		event.preventDefault();
 		searchGiphy = !searchGiphy;
@@ -18,6 +26,10 @@ $(document).ready(function(){
 		giphy.addClass('selected');
 		bing.removeClass('selected');
 		flickr.removeClass('selected');
+	})
+
+	$("body").on('focus',"#query", function(event){
+		$(".examples").hide();
 	})
 
 	$("body").on('click', '#searchFlickr', function(event){
@@ -40,7 +52,7 @@ $(document).ready(function(){
 		flickr.removeClass('selected');
 	})
 
-	$("form").on('submit', function(event){
+	$("#gifit").on('submit', function(event){
 
 		event.preventDefault();
 		var query = $(".gif-query").val();
