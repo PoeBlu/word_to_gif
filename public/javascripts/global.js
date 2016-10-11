@@ -52,6 +52,20 @@ $(document).ready(function(){
 		flickr.removeClass('selected');
 	})
 
+	$("#query").on('keyup', function(){
+		// ensure only 5 words can be typed in
+		var words = this.value.match(/\S+/g);
+
+		if(words == null){
+			return
+		}
+
+		if(words.length>5){
+			var trimmed = $(this).val().split(/\s+/,5).join(" ")
+			$(this).val(trimmed + " ")
+		}
+	})
+
 	$("#gifit").on('submit', function(event){
 
 		event.preventDefault();
