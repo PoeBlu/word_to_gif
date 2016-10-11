@@ -31,7 +31,7 @@ $(document).ready(function(){
 	})
 
 	$("body").on('focus',"#query", function(event){
-		$(".examples").hide();
+		//$(".examples").hide();
 	})
 
 	$("body").on('click', '#searchFlickr', function(event){
@@ -90,7 +90,8 @@ $(document).ready(function(){
 
 		query = query.join(" ");
 
-
+		$(".examples").hide();
+		$(".explain").hide();
 		loading.show();
 
 		if(!searchGiphy){

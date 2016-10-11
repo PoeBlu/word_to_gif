@@ -95,7 +95,7 @@ router.post('/imgtogif', function(req,res,next){
 			}
 			var url = randomImg.MediaUrl;
 			imageCounter++;
-			downloadImage(url, uniqueFilename ,imageCounter, queryTerms[index])
+			downloadImage(url, uniqueFilename ,index, queryTerms[index])
 		})
 	}
 
@@ -132,7 +132,7 @@ router.post('/imgtogif', function(req,res,next){
 			imageCounter++;
 
 			//download the image
-			downloadImage(url, uniqueFilename ,imageCounter, queryTerms[index])
+			downloadImage(url, uniqueFilename ,index, queryTerms[index])
 		})
 	}
 
@@ -167,7 +167,7 @@ router.post('/imgtogif', function(req,res,next){
 		exec(cmd, function(err){
 			console.log('RESIZED JPG');
 			resizeImageCounter++;
-			deleteFile("./images/"+imageToResize+".jpg");
+			//deleteFile("./images/"+imageToResize+".jpg");
 			if(resizeImageCounter == queryTermsLength){
 				console.log(resizeImageCounter, queryTermsLength)
 				console.log("Make gif")
