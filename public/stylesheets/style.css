@@ -89,7 +89,7 @@ ul {
 .powered {
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	right: 10px;
 }
 
 #gifit {
@@ -166,6 +166,22 @@ ul {
 	text-align: center;
 	color:#aaa;
 	font-weight: 300;
+	min-height: 30px;
+}
+
+.explain {
+	margin-top: 5%;
+	text-align:  center;
+}
+
+.explain h3 {
+	color: #333;
+	font-size: 30px;
+	font-weight: 200;
+}
+
+.explain p {
+	color: #bbb;
 }
 
 .result {

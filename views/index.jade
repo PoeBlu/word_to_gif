@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  //div(class='powered')
+  div(class='powered')
+    p Made by <a href='https://twitter.com/shekitup' target='_blank'>Abhishek Singh</a>
     //img(src='/images/powered.png')
   div(class='loading')
     h3 Creating your GIF...
@@ -55,3 +56,13 @@ block content
         img(src='', id='newgif',class='img-responsive center-block' width='400')
         a(href='', id='newgifurl',target='blank', class='text-center gifurl')
       div(class='col-md-2')
+    div(class='row explain')
+      div(class='col-sm-4')
+      div(class='col-xs-12 col-sm-4')
+        h3 How this works?
+        p Describe your gif (< 5 words)
+        p Put '-' to chain words e.g hillary-clinton
+        p Press the button
+        p Be patient
+        p Enjoy your gif! Share it, Use it, Throw it!
+      div(class='col-sm-4')
