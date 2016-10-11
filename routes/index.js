@@ -80,7 +80,7 @@ router.post('/imgtogif', function(req,res,next){
 			}
 			var url = randomImg.MediaUrl;
 			imageCounter++;
-			downloadImage(url, uniqueFilename ,imageCounter)
+			downloadImage(url, uniqueFilename ,imageCounter, queryTerms[index])
 		})
 	}
 
@@ -117,7 +117,7 @@ router.post('/imgtogif', function(req,res,next){
 			imageCounter++;
 
 			//download the image
-			downloadImage(url, uniqueFilename ,imageCounter)
+			downloadImage(url, uniqueFilename ,imageCounter, queryTerms[index])
 		})
 	}
 
@@ -129,16 +129,16 @@ router.post('/imgtogif', function(req,res,next){
 	}
 	
 
-	function downloadImage(imageUrl,filename,counter){
+	function downloadImage(imageUrl,filename,counter,imageTitle){
 		console.log("Downloading image");
 		var img_url = filename+counter;
 		request(imageUrl).pipe(fs.createWriteStream("./images/"+img_url+".jpg")).on('close', function(){
 			console.log("Downloaded")
-			resizeImage(img_url, counter, filename);
+			resizeImage(img_url, counter, filename,imageTitle);
 		})
 	}
 
-	function resizeImage(imageToResize, imageCounterVar, filenameVar){
+	function resizeImage(imageToResize, imageCounterVar, filenameVar,imageTitle){
 		console.log("Resizing images")
 
 		var dir = './images/converted/'+filenameVar;
@@ -147,7 +147,7 @@ router.post('/imgtogif', function(req,res,next){
 			fs.mkdirSync(dir);
 		}
 
-		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 "+dir+"/"+imageToResize+".jpg"
+		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 -gravity South -pointsize 40 -stroke '#000000' -strokewidth 2 -fill white -annotate +0+50 '"+imageTitle+"' "+dir+"/"+imageToResize+".jpg"
 
 		exec(cmd, function(err){
 			console.log('RESIZED JPG');
