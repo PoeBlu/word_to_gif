@@ -81,7 +81,7 @@ router.post('/imgtogif', function(req,res,next){
 
 	function searchBing(index){
 		console.log("Search Bing");
-		Bing.images(queryTerms[index],{top:25}, function(bingerror, bingres, bingbody){
+		Bing.images(queryTerms[index],{top:50, imageFilters:{style:'photo'}}, function(bingerror, bingres, bingbody){
 			if(!bingbody || bingerror){  //if no results returned then skip
 				queryTermsLength--; //reduce length of acceptable query terms
 				checkQueryLength(); //do this so if all are unacceptable words then it the post call returns something
@@ -167,7 +167,7 @@ router.post('/imgtogif', function(req,res,next){
 		exec(cmd, function(err){
 			console.log('RESIZED JPG');
 			resizeImageCounter++;
-			//deleteFile("./images/"+imageToResize+".jpg");
+			deleteFile("./images/"+imageToResize+".jpg");
 			if(resizeImageCounter == queryTermsLength){
 				console.log(resizeImageCounter, queryTermsLength)
 				console.log("Make gif")
