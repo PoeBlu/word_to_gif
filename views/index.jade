@@ -1,8 +1,8 @@
 extends layout
 
 block content
-  div(class='powered')
-    img(src='/images/powered.png')
+  //div(class='powered')
+    //img(src='/images/powered.png')
   div(class='loading')
     h3 Creating your GIF...
     h4 Be patient. This may take a little bit
@@ -11,28 +11,28 @@ block content
       div(class='col-md-2')
       div(class='col-xs-12 col-md-8')
         h1(class='logo-header text-center')
-          img(src='/images/logo.png', class='logo')
+          img(src='/images/logo2.png', class='logo center-block img-responsive')
         h3(class='subtext') Give me your words & I shall give you a GIF
       div(class='col-md-2')
-    div(class='row margined-row')
-      div(class='col-md-2')
-      div(class='col-xs-12 col-md-8')
-        h2 Step 1 : Choose your Source
-        ul(class='list-inline')
-          li
-            a(href="#", id="searchGiphy", class='giphy btn btn-default btn-lg') Giphy
-          li
-            a(href="#", id="searchBing", class='bing btn btn-default btn-lg') Bing
-          li
-            a(href="#", id="searchFlickr", class='flickr btn btn-default btn-lg') Flickr
-      div(class='col-md-2')
+    //div(class='row margined-row')
+      //div(class='col-md-2')
+      //div(class='col-xs-12 col-md-8')
+        //h2 Step 1 : Choose your Source
+        //ul(class='list-inline')
+          //li
+            //a(href="#", id="searchGiphy", class='giphy btn btn-default btn-lg') Giphy
+          //li
+            //a(href="#", id="searchBing", class='bing btn btn-default btn-lg') Bing
+          //li
+            //a(href="#", id="searchFlickr", class='flickr btn btn-default btn-lg') Flickr
+      //div(class='col-md-2')
     div(class='row')
       div(class='col-md-2')
       div(class='col-xs-12 col-md-8')
-        h2 Step 2 : Type out your GIF
+        //h2 Step 2 : Type out your GIF
         form(id='gifit', class='form-inline')
           div(class='form-group')
-            input(type='text',id='query',class='form-control input-lg input-block gif-query', placeholder='Your text: 5 words max')
+            input(type='text',id='query',class='form-control input-lg input-block gif-query', placeholder='Type your gif...')
           div(class='form-group')
             input(type='submit',class='btn btn-success btn-lg submit-query', value='Gif it')
       div(class='col-md-2')
@@ -42,10 +42,12 @@ block content
         form(class='form-inline')
           div(class='form-group')
             input(type='text',class='form-control input-lg input-block hidden-form')
-            div(class='examples')
           div(class='form-group')
             input(type='submit',class='btn btn-lg hidden-form', value='Gif it')  
       div(class='col-md-2')
+    div(class='row')
+      div(class='col-xs-12 text-center')
+        div(class='examples')
     div(class='row')
       div(class='col-md-2')
       div(class='col-xs-12 col-md-8 result')

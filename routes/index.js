@@ -40,7 +40,22 @@ router.post('/imgtogif', function(req,res,next){
 	//split query on spaces
 	var queryTerms = query.split(/\s+/);
 
+	//remove common words
+	/*var commonWords = ['the','an','of', 'are','is']
+
+	for(var i in queryTerms){
+		if(commonWords.indexOf(queryTerms[i])>-1){
+			queryTerms.splice(i,1)
+		}
+	}*/
+
 	queryTermsLength = queryTerms.length;
+
+	// prevent more than 5 words being queried
+	if(queryTermsLength>5){
+		queryTermsLength = 5;
+		queryTerms = queryTerms.slice(0,5)
+	}
 
 	// return if no query is detected
 	checkQueryLength();
@@ -147,7 +162,7 @@ router.post('/imgtogif', function(req,res,next){
 			fs.mkdirSync(dir);
 		}
 
-		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 -gravity South -pointsize 40 -stroke '#000000' -strokewidth 2 -fill white -annotate +0+50 '"+imageTitle+"' "+dir+"/"+imageToResize+".jpg"
+		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 -gravity South -pointsize 50 -stroke '#000000' -strokewidth 2 -fill white -annotate +0+50 '"+imageTitle+"' "+dir+"/"+imageToResize+".jpg"
 
 		exec(cmd, function(err){
 			console.log('RESIZED JPG');
@@ -373,35 +388,6 @@ router.post('/giftogif', function(req, res, next){
 		})
 	}
 
-	// NOT WORKING - uses gif-explode package
-	// function explodeGif(img_name){
-	// 	fs.createReadStream("../images/"+img_name+".gif")
-	// 	  .pipe(gif(function(frame){
-	// 	  	frame.pipe(fs.createWriteStream('../images/hello'+i+'.gif'))
-	// 	  }))
-	// }
-
-
-	// NOT WORKING - using gifsicle package
-	// function gifsicleIt(img_name){
-	// 	var filePath = '../images/*.gif'
-	// 	var outFilePath = '../images/anim.gif'
-	// 	execFile(gifsicle, ['--explode',filePath], function(err){
-	// 		console.log('combined');
-	// 	})
-	// 	return
-	// }
-
-	// function execGifsicle(){
-	// 	var cmd = 'gifsicle -d 100 --loop ../images/1.gif ../images/2.gif > anim.gif'
-
-	// 	exec(cmd, function(err){
-	// 		console.log("Error: "+err)
-	// 		console.log("Combined")
-	// 	})
-
-	// 	return
-	// }
 })
 
 router.post('/s', function(req,res,next){
@@ -426,16 +412,6 @@ function deleteFolder(folderPath){
 		console.log("Deleted Folder")
 	})
 }
-
-// router.get('/giff', function(req,res,next){
-// 	pngFileStream('../test/frame?.png')
-// 	.pipe(encoder.createWriteStream({repeat:0, delay:150, quality:10}))
-// 	.pipe(fs.createWriteStream('../gif/animated.gif'))
-
-
-// 	res.send('giffed')
-// })
-
 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });

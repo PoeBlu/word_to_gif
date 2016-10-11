@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 	var searchGiphy = false;
 
-	var searchApi = 'flickr';
+	var searchApi = 'bing';
 
 	var loading = $(".loading")
 	var bing = $("#searchBing");
@@ -18,6 +18,8 @@ $(document).ready(function(){
 		typeSpeed:5,
 		backSpeed:0
 	})
+
+	$('#query').focus();
 
 	$("body").on('click','#searchGiphy', function(event){
 		event.preventDefault();
@@ -94,7 +96,7 @@ $(document).ready(function(){
 		if(!searchGiphy){
 
 			$.ajax({
-				"url":"http://localhost:3000/imgtogif",
+				"url":"/imgtogif",
 				"method": "POST",
 				"data":{"query":query, "searchApi":searchApi}
 			})
@@ -117,7 +119,7 @@ $(document).ready(function(){
 
 		} else {
 			$.ajax({
-				"url":"http://localhost:3000/giftogif",
+				"url":"/giftogif",
 				"method": "POST",
 				"data":{"query":query}
 			})

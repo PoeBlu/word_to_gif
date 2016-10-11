@@ -8,6 +8,10 @@ h2 {
 	margin-bottom:10px;
 }
 
+.container-fixed {
+	padding: 0 10px;
+}
+
 .row {
 	text-align: center;
 }
@@ -17,7 +21,7 @@ ul {
 }
 
 .logo {
-	width: 300px;
+	width: 400px;
 }
 
 .logo-header {
@@ -88,6 +92,10 @@ ul {
 	right: 0;
 }
 
+#gifit {
+	margin-top: 10%;
+}
+
 .loading {
 	position: absolute;
 	width: 100%;
@@ -118,6 +126,35 @@ ul {
 	border: 1px solid #ec008c;
 }
 
+#query {
+	width: 50%;
+}
+
+.submit-query{
+	width: 100px;
+}
+
+.form-group {
+	display: inline !important;
+}
+
+
+@media (max-width: 768px){
+
+	.form-group {
+		display: inherit;
+	}
+
+	.submit-query {
+		width: 100%;
+	}
+
+	#query {
+		text-align: center;
+		width: 100%;
+	}
+}
+
 .hidden-form{
 	height: 0;
 	visibility: hidden;
@@ -126,7 +163,7 @@ ul {
 }
 
 .examples{
-	text-align: left;
+	text-align: center;
 	color:#aaa;
 	font-weight: 300;
 }
