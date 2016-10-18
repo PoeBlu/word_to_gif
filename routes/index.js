@@ -162,7 +162,7 @@ router.post('/imgtogif', function(req,res,next){
 			fs.mkdirSync(dir);
 		}
 
-		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 -gravity South -pointsize 50 -stroke '#000000' -strokewidth 2 -fill white -annotate +0+50 '"+imageTitle+"' -gravity SouthEast -pointsize 20 -fill black -stroke black -strokewidth 1 -annotate +0+10 'gifItToMeNow.com' "+dir+"/"+imageToResize+".jpg"
+		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 -gravity South -pointsize 50 -stroke '#000000' -strokewidth 2 -fill white -annotate +0+50 '"+imageTitle+"' -gravity SouthEast -pointsize 25 -fill black -stroke white -strokewidth 1 -annotate +10+10 'gifitTo.me' "+dir+"/"+imageToResize+".jpg"
 
 		exec(cmd, function(err){
 			console.log('RESIZED JPG');
