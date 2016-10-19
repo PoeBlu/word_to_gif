@@ -9,7 +9,7 @@ $(document).ready(function(){
 	var giphy = $("#searchGiphy");
 	var flickr = $("#searchFlickr")
 
-	var maxQueryAllowed = 5;
+	var maxQueryAllowed = 7;
 
 	$(".examples").typed({
 		strings: ["donald-trump eats giraffe^300","clinton cycles through wormhole^300","steve-martin loves burger^300","justin-bieber slaps pizza^300","think funny thoughts^300","donkey walks through fire rainbow^300"],
@@ -62,8 +62,8 @@ $(document).ready(function(){
 			return
 		}
 
-		if(words.length>5){
-			var trimmed = $(this).val().split(/\s+/,5).join(" ")
+		if(words.length>maxQueryAllowed){
+			var trimmed = $(this).val().split(/\s+/,maxQueryAllowed).join(" ")
 			$(this).val(trimmed + " ")
 		}
 	})

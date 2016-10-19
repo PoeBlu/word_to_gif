@@ -27,6 +27,8 @@ var rimraf = require('rimraf');
 
 var hostname = config.url;
 
+var maxWordsAllowed = 7;
+
 /* GET home page. */
 
 router.post('/imgtogif', function(req,res,next){
@@ -52,9 +54,9 @@ router.post('/imgtogif', function(req,res,next){
 	queryTermsLength = queryTerms.length;
 
 	// prevent more than 5 words being queried
-	if(queryTermsLength>5){
-		queryTermsLength = 5;
-		queryTerms = queryTerms.slice(0,5)
+	if(queryTermsLength>maxWordsAllowed){
+		queryTermsLength = maxWordsAllowed;
+		queryTerms = queryTerms.slice(0,maxWordsAllowed)
 	}
 
 	// return if no query is detected
@@ -222,7 +224,7 @@ router.post('/imgtogif', function(req,res,next){
 			//console.log("COMBINED to gif");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/converted/'+filenameToGif)
-			res.send('https://'+hostname+'/images/gif/'+finalName+'.gif');
+			res.send(hostname+'/images/gif/'+finalName+'.gif');
 		})
 
 	}
