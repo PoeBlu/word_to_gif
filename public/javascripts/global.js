@@ -24,7 +24,7 @@ $(document).ready(function(){
 	$("body").on('click','#searchGiphy', function(event){
 		event.preventDefault();
 		searchGiphy = !searchGiphy;
-		console.log(searchApi, searchGiphy);
+		//console.log(searchApi, searchGiphy);
 		giphy.addClass('selected');
 		bing.removeClass('selected');
 		flickr.removeClass('selected');
@@ -38,7 +38,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		searchApi = 'flickr';	
 		searchGiphy = false;
-		console.log(searchApi, searchGiphy);	
+		//console.log(searchApi, searchGiphy);	
 		giphy.removeClass('selected');
 		bing.removeClass('selected');
 		flickr.addClass('selected');
@@ -48,7 +48,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		searchApi = 'bing';
 		searchGiphy = false;
-		console.log(searchApi, searchGiphy);
+		//console.log(searchApi, searchGiphy);
 		giphy.removeClass('selected');
 		bing.addClass('selected');
 		flickr.removeClass('selected');
@@ -75,7 +75,7 @@ $(document).ready(function(){
 		query = query.toLowerCase().trim(); //remove whitespace
 
 		if(!query){
-			console.log("no query");
+			//console.log("no query");
 			return;
 		}
 
@@ -102,7 +102,7 @@ $(document).ready(function(){
 				"data":{"query":query, "searchApi":searchApi}
 			})
 			.done(function(resp){
-				console.log("GOT GIF FROM IMGS")
+				//console.log("GOT GIF FROM IMGS")
 				//console.log(resp)
 				loading.hide();
 				if(resp!='no'){
@@ -113,9 +113,9 @@ $(document).ready(function(){
 				
 			})
 			.error(function(err){
-				console.log(err)
+				//console.log(err)
 				loading.hide();
-				alert("oops there was an error, try again")
+				alert("Oops there was an error, try again!")
 			})
 
 		} else {
@@ -135,9 +135,9 @@ $(document).ready(function(){
 				}
 			})
 			.error(function(err){
-				console.log(err)
+				//console.log(err)
 				loading.hide();
-				alert("oops there was an error, try again")
+				alert("Oops there was an error, try again")
 			})
 		}
 
@@ -148,7 +148,7 @@ $(document).ready(function(){
 	}
 
 	function showGif(resp){
-		console.log(resp);
+		//console.log(resp);
 		$(".result").show();
 		$("#newgif").attr('src',resp);
 		$("#newgifurl").attr('href',resp);

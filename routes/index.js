@@ -128,7 +128,7 @@ router.post('/imgtogif', function(req,res,next){
 			}
 
 			var url = "https://farm"+response["farm"]+".staticflickr.com/"+response["server"]+"/"+response["id"]+"_"+response["secret"]+".jpg";
-			console.log(url);
+			//console.log(url);
 			imageCounter++;
 
 			//download the image
@@ -145,10 +145,10 @@ router.post('/imgtogif', function(req,res,next){
 	
 
 	function downloadImage(imageUrl,filename,counter,imageTitle){
-		console.log("Downloading image");
+		//console.log("Downloading image");
 		var img_url = filename+counter;
 		request(imageUrl).pipe(fs.createWriteStream("./images/"+img_url+".jpg")).on('close', function(){
-			console.log("Downloaded")
+			//console.log("Downloaded")
 			resizeImage(img_url, counter, filename,imageTitle);
 		})
 	}
@@ -165,12 +165,12 @@ router.post('/imgtogif', function(req,res,next){
 		var cmd = "convert ./images/"+imageToResize+".jpg -resize 500x400^ -gravity center -extent 500x400 -gravity South -pointsize 50 -stroke '#000000' -strokewidth 2 -fill white -annotate +0+50 '"+imageTitle+"' -gravity SouthEast -pointsize 25 -fill black -stroke white -strokewidth 1 -annotate +10+10 'gifitTo.me' "+dir+"/"+imageToResize+".jpg"
 
 		exec(cmd, function(err){
-			console.log('RESIZED JPG');
+			//console.log('RESIZED JPG');
 			resizeImageCounter++;
 			deleteFile("./images/"+imageToResize+".jpg");
 			if(resizeImageCounter == queryTermsLength){
-				console.log(resizeImageCounter, queryTermsLength)
-				console.log("Make gif")
+				//console.log(resizeImageCounter, queryTermsLength)
+				//console.log("Make gif")
 				createGif(filenameVar);
 			}
 		})
@@ -219,10 +219,10 @@ router.post('/imgtogif', function(req,res,next){
 		var cmd = 'convert -delay 50 -loop 0 ./images/converted/'+filenameToGif+'/'+filenameToGif+'*.jpg ./public/images/gif/'+finalName+'.gif';
 
 		exec(cmd, function(err){
-			console.log("COMBINED to gif");
+			//console.log("COMBINED to gif");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/converted/'+filenameToGif)
-			res.send('http://'+hostname+'/images/gif/'+finalName+'.gif');
+			res.send('https://'+hostname+'/images/gif/'+finalName+'.gif');
 		})
 
 	}
@@ -291,7 +291,7 @@ router.post('/giftogif', function(req, res, next){
 	}
 
 	function downloadGif(imageUrl,filename,counter){
-		console.log("Downloading Gif");
+		//console.log("Downloading Gif");
 		var img_path = filename+counter;
 		console.log(img_path)
 		request(imageUrl).pipe(fs.createWriteStream("./images/"+img_path+".gif")).on('close', function(){
@@ -361,14 +361,14 @@ router.post('/giftogif', function(req, res, next){
 	
 
 	function resizeExplodedGifs(filename){
-		console.log("RESIZING IMAGES");
+		//console.log("RESIZING IMAGES");
 		// make new folder to save resized images to
 		var dir = "./images/gifconverted/"+filename+"/resized";
 		fs.mkdirSync(dir);
 		var cmd = "convert ./images/gifconverted/"+filename+"/"+filename+"*.gif -resize 400x300^ -gravity center -extent 400x300 "+dir+"/"+filename+"%04d.gif"
 
 		exec(cmd, function(err){
-			console.log('RESIZED GIFS');
+			//console.log('RESIZED GIFS');
 			combineToGif(filename);
 			//explodeImageMagick(imageToResize, filenameVar)
 		})
@@ -381,7 +381,7 @@ router.post('/giftogif', function(req, res, next){
 		var cmd = 'convert -delay 7 -loop 0 ./images/gifconverted/'+filename+'/resized/'+filename+'*.gif ./public/images/gifgif/'+finalName+'.gif';
 
 		exec(cmd, function(err){
-			console.log("COMBINED");
+			//console.log("COMBINED");
 			//delete folders once its been combined to a gif
 			deleteFolder('./images/gifconverted/'+filename)
 			res.send('http://'+hostname+'/images/gifgif/'+finalName+'.gif');
@@ -399,17 +399,17 @@ router.post('/s', function(req,res,next){
 })
 
 function deleteFile(filePath){
-	console.log("DELETING FILE")
+	//console.log("DELETING FILE")
 	fs.unlink(filePath, function(err){
-		console.log("Deleted  File")
+		//console.log("Deleted  File")
 	})
 }
 
 function deleteFolder(folderPath){
-	console.log("DELETE FOLDER")
+	//console.log("DELETE FOLDER")
 	rimraf(folderPath, function(err){
-		console.log(err);
-		console.log("Deleted Folder")
+		//console.log(err);
+		//console.log("Deleted Folder")
 	})
 }
 
