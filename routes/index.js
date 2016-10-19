@@ -25,7 +25,7 @@ var exec = require('child_process').exec;
 
 var rimraf = require('rimraf');
 
-var hostname = 'localhost:3000'
+var hostname = config.url;
 
 /* GET home page. */
 
